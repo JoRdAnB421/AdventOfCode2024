@@ -4,106 +4,47 @@ IDEAS: - run  regex search forward and backward for each line ---> captures XMAS
 
 
 import re
-
+from time import time
 
 with open('Inputs/day4Input.txt') as f:
     lines = [line.strip() for line in f.readlines()]
 
-# Commonly used regex pattern
-pattern = re.compile('(?=(XMAS)|(SAMX))')
+stime=time()
+oneline=''
+for line in lines:oneline+=line+'1'
+initlen=len(lines[0])
+mid=initlen
+sml=initlen-1-1
+smlprime=sml+1
+lrg=initlen+1-1
 
-initlen = len(lines[0])
-
-# How many occurances
-count=0
-# covers left to right occurances 
-for line in lines: count+= len(pattern.findall(line))
-
-# Transpose the data
-cols = []
-for j in range(initlen):
-    # Loops through characters
-    s=''
-    for line in lines: s+=line[j]
-    cols.append(s)
-
-# Search 
-for col in cols: count+= len(pattern.findall(col))
-
-# Shift the data to make diagonal (right diagonal)
-rdiag = []
-for k, line in enumerate(lines):
-    # loop through each line
-    if k==0:
-        for i in range(initlen):
-            # Loop through the characters
-            s=line[i]
-            for j in range(k+1, initlen):
-                # Shift all following lines 
-                try: s+=lines[j][j-k+i]
-                except:break
-
-            if len(s)>0: rdiag.append(s)
+# Regex patterns for all directions
+leftright = re.compile(r'(?=(XMAS)|(SAMX))')
+updown = re.compile(r'(?=(X.{{{initlen}}}M.{{{initlen}}}A.{{{initlen}}}S)|(S.{{{initlen}}}A.{{{initlen}}}M.{{{initlen}}}X))'.format(initlen=mid))
+rdiag = re.compile(r'(?=([^1]X.{{{sml}}}[^1]M.{{{sml}}}[^1]A.{{{initlen}}}S)|([^1]S.{{{sml}}}[^1]A.{{{sml}}}[^1]M.{{{initlen}}}X))'.format(sml=sml, initlen=smlprime))
+ldiag = re.compile(r'(?=(X[^1].{{{lrg}}}M[^1].{{{lrg}}}A[^1].{{{lrg}}}S)|(S[^1].{{{lrg}}}A[^1].{{{lrg}}}M[^1].{{{lrg}}}X))'.format(lrg=lrg))
 
 
-    else:
-        s=line[0]
-        for j in range(k+1, initlen):
-            # Shift all following lines 
-            try: s+=lines[j][j-k]
-            except:break
-        if len(s)>0: rdiag.append(s)
-
-# search
-for rd in rdiag: count+= len(pattern.findall(rd))
-
-# Shift the data to make diagonal (left diagonal)
-newlines=[line[::-1] for line in lines]
-ldiag = []
-for k, line in enumerate(newlines):
-    # loop through each line
-    if k==0:
-        for i in range(initlen):
-            # Loop through the characters
-            s=line[i]
-            for j in range(k+1, initlen):
-                # Shift all following lines 
-                try: s+=newlines[j][j-k+i]
-                except:break
-
-            if len(s)>0: ldiag.append(s)
-
-
-    else:
-        s=line[0]
-        for j in range(k+1, initlen):
-            # Shift all following lines 
-            try: s+=newlines[j][j-k]
-            except:break
-        if len(s)>0: ldiag.append(s)
-# search
-for ld in ldiag: count+= len(pattern.findall(ld))
-
-print(f'Count found to be {count}')
-
-
-
+count = len(leftright.findall(oneline)) + len(updown.findall(oneline)) + len(rdiag.findall(oneline)) + len(ldiag.findall(oneline))
+totTime = time()-stime
+print(f'Count found to be {count} in {totTime:.3f} s')
 ####### Part B
 '''
 They are always the same distance apart so I should be able to search'''
 
 with open('Inputs/day4Input.txt') as f:
     lines = [line.strip() for line in f.readlines()]
-    
+
+stime=time()
 oneline=''
 for line in lines:oneline+=line+'1'
 
 initlen=len(lines[0])
 
-print(oneline)
 # regex pattern
-sml=initlen-1; lrg=initlen-1
+lrg=initlen-1
 pattern = re.compile(r'(?=(M[^1]S.{{{lrg}}}A.{{{lrg}}}M.S)|(S[^1]M.{{{lrg}}}A.{{{lrg}}}S.M)|(S[^1]S.{{{lrg}}}A.{{{lrg}}}M.M)|(M[^1]M.{{{lrg}}}A.{{{lrg}}}S.S))'.format(lrg=lrg))
 count = len(pattern.findall(oneline))
 
-print(f'count found as {count}')
+totTime = time()-stime
+print(f'Count found to be {count} in {totTime:.3f} s')
