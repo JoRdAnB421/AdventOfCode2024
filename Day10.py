@@ -2,7 +2,7 @@ import numpy as np
 from time import time
 
 mapp = []
-with open('Tests/day10Input.txt') as f:
+with open('Inputs/day10Input.txt') as f:
     for line in f.readlines():
         mapp.append(list(line.strip()))
 mapp = np.asarray(mapp).astype(int)
@@ -139,9 +139,9 @@ def LookAhead(coords, mapp=mapp):
             nextCoords = [(y,x) for y,x in zip(walker_y[nextvals], walker_x[nextvals])]
             
             # Track motion
-            print(f'\nCurrentPos = {coords}')
-            print(f'Nextposition = {nextCoords}\n##########')
-            input()
+            # print(f'\nCurrentPos = {coords}')
+            # print(f'Nextposition = {nextCoords}\n##########')
+            # input()
             return nextCoords
         
     elif type(coords)==list:
@@ -157,17 +157,14 @@ def LookAhead(coords, mapp=mapp):
 
             else:
                 # Can still move
-                for m in look:
-                    if m not in state: state.append(m)
-                # if look[0] not in state:
-                #     state.extend(look)
+                state.extend(look)
 
         return state
         
 
 scores = []
 for si, sj in zip(allstart[0], allstart[1]):
-    print(f'Starting with coord {(si,sj)}')
+    # print(f'Starting with coord {(si,sj)}')
     # for each possible start
     score=0 # reset score
     finishCoords = []
@@ -175,7 +172,7 @@ for si, sj in zip(allstart[0], allstart[1]):
 
     # First look
     pos = LookAhead((si,sj))
-    print(pos)
+    # print(pos)
     if pos==None: continue # Dead start
     while alive:
 
@@ -188,8 +185,8 @@ for si, sj in zip(allstart[0], allstart[1]):
     score+=len(finishCoords)
     scores.append(score)
 
-    print(finishCoords)
-    input()
+    # print(finishCoords)
+    # input()
 # print(f'all scores are {scores}')
 print(f'Time taken = {time()-starttime}')
 print(f'Sum of scores = {sum(scores)}')
